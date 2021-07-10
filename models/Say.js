@@ -9,6 +9,7 @@ const SaySchema = new Schema({
     },
     userAvatar:{
         type:String,
+        default:"/static/image/avatar.jpg"
     },
     userName:{
         type:String,

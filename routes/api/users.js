@@ -8,24 +8,33 @@ const passport = require("passport");
 
 const User = require("../../models/User");
 
+router.post('/testPost',(req, res) => {
+    const account = req.body.account;
+    const password = req.body.password;
+    res.json(req.body);
+})
+
 // login api
 // $route POST api/users/login
 // @desc 返回token jwt passport
 router.post("/login", (req, res) => {
-    const email = req.body.email;
+    const account = req.body.account;
     const password = req.body.password;
+    
     // 查询数据库
-    User.findOne({email})
+    User.findOne({account})
         .then(user => {
             if (!user) {
-                return res.status(404).json("用户不存在！");
+                return res.status(400).json("用户不存在！");
             } else {
-                bcrypt.compare(password, user.password)
+                console.log('password',password);
+                console.log('user.password',user.password);
+                bcrypt.compare(user.password, password)
                     .then(isMatch => {
                         if (isMatch) {
                             const rule = {
                                 id: user.id,
-                                name: user.name
+                                account: user.account
                             };
                             jwt.sign(rule, keys.secretOrKey, {
                                 expiresIn: 3600
@@ -42,7 +51,7 @@ router.post("/login", (req, res) => {
                     })
             }
         })
-})
+}) 
 
 // register api
 // $route POST api/users/register
@@ -55,21 +64,23 @@ router.post("/register", (req, res) => {
                 return res.status(400).json("邮箱已被注册");
             } else {
                 const newUser = new User({
-                    name: req.body.name,
+                    account: req.body.account,
                     email: req.body.email,
                     password: req.body.password
                 });
-
+                newUser.save()
+                    .then(user =>  res.json(user))
+                    .catch(err => res.json(err));
                 // 加密密码
-                bcrypt.genSalt(10, function (err, salt) {
-                    bcrypt.hash(newUser.password, salt, (err, hash) => {
-                        if (err) throw err;
-                        newUser.password = hash;
-                        newUser.save()
-                            .then(user => res.json(user))
-                            .catch(err => console.log(err))
-                    })
-                })
+                // bcrypt.genSalt(10, function (err, salt) {
+                //     bcrypt.hash(newUser.password, salt, (err, hash) => {
+                //         if (err) throw err;
+                //         newUser.password = hash;
+                //         newUser.save()
+                //             .then(user => res.json(user))
+                //             .catch(err => console.log(err))
+                //     })
+                // })
             }
         })
 })
@@ -81,7 +92,7 @@ router.post("/register", (req, res) => {
 router.get("/authToken", passport.authenticate("jwt", {session: false}), (req, res) => {
     res.json({
         id: req.user.id,
-        name: req.user.name,
+        account: req.user.account,
         email: req.user.email
     });
 })
