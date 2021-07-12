@@ -25,9 +25,6 @@ const ArticleSchema = new Schema({
     introduction:{
         type:String
     },
-    action:{
-        type:Object
-    },
     tags:{
         type:Array
     },

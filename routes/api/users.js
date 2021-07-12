@@ -27,8 +27,6 @@ router.post("/login", (req, res) => {
             if (!user) {
                 return res.status(400).json("用户不存在！");
             } else {
-                console.log('password',password);
-                console.log('user.password',user.password);
                 bcrypt.compare(user.password, password)
                     .then(isMatch => {
                         if (isMatch) {
