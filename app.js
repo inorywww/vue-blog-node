@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
-
-// passport 初始化
+const utils = require('./utils'); //此次启动使用
+// passport 初始化 
 const passport = require("passport");
 app.use(passport.initialize());
 require("./config/passport")(passport);
@@ -9,7 +9,6 @@ require("./config/passport")(passport);
 // express.json()解析数据
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-
 // import api
 const users = require("./routes/api/users");
 const articles = require("./routes/api/articles");
@@ -24,4 +23,8 @@ app.use("/api/say", says);
 app.use("/api/message", messages);
 app.use("/api/tag", tags);
 
+app.use('/api/article/uploadMD', express.static(__dirname + '/uploadFile'))
+
+
+utils.getTags(); // 此次启动使用 获取文章中和数据库中所有tag
 module.exports = app;

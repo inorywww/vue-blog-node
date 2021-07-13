@@ -59,7 +59,7 @@ router.get("/:type", (req, res) => {
 // @access Private
 router.post("/edit/:messageID",passport.authenticate("jwt", {session: false}), (req, res) => {
     const messageFields = {};
-    if(req.body.id) messageFields.id = req.body.id;
+    
     if(req.body.type) messageFields.type = req.body.type;
     if(req.body.info) messageFields.info = req.body.info;
 

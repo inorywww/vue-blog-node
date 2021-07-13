@@ -9,10 +9,13 @@ const Say = require("../../models/Say");
 // $route POST api/admin/say/add
 // @desc 添加say
 // @access Private
-router.post("/add",passport.authenticate("jwt", {session: false}), (req, res) => {
+router.post("/add",passport.authenticate("jwt", {session: false}), async (req, res) => {
     const sayFields = {};
-    if(req.body.sayID) sayFields.sayID = req.body.sayID;
-    if(req.body.userAvatar) sayFields.userAvatar = req.body.userAvatar;
+    let newID = 0;
+    await Say.find().then(say => {
+        newID = Math.max.apply(Math, say.map(function(o) {return o.sayID})) + 1;
+    });
+    sayFields.sayID = newID;
     if(req.body.userName) sayFields.userName = req.body.userName;
     if(req.body.content) sayFields.content = req.body.content;
     if(req.body.coverSrc) sayFields.coverSrc = req.body.coverSrc;
@@ -56,8 +59,6 @@ router.get("/:sayID", (req, res) => {
 // @access Private
 router.post("/edit/:sayID",passport.authenticate("jwt", {session: false}), (req, res) => {
     const sayFields = {};
-    if(req.body.sayID) sayFields.sayID = req.body.sayID;
-    if(req.body.userAvatar) sayFields.userAvatar = req.body.userAvatar;
     if(req.body.userName) sayFields.userName = req.body.userName;
     if(req.body.content) sayFields.content = req.body.content;
     if(req.body.coverSrc) sayFields.coverSrc = req.body.coverSrc;
