@@ -99,9 +99,7 @@ router.post("/edit/:articleID", passport.authenticate("jwt", {
 // $route GET api/article/delete/:articleID
 // @desc 删除article
 // @access Private
-router.delete("/delete/:articleID", passport.authenticate("jwt", {
-    session: false
-}), async (req, res) => {
+router.delete("/delete/:articleID", passport.authenticate("jwt", {session: false}), async (req, res) => {
     await Article.findOneAndRemove({
             articleID: req.params.articleID
         })
@@ -116,9 +114,15 @@ router.delete("/delete/:articleID", passport.authenticate("jwt", {
 let upload = multer({
     storage: multer.diskStorage({
       //设置文件存储位置
+
       destination: function (req, file, cb) {
-        const dir = "public/articles/";
-        console.log('file.originalname',file.originalname)
+        let dir = '';
+        if(file.originalname.split('.')[1] === 'md'){
+           dir = "public/articles/";
+        }
+        else{
+            dir = "public/covers/";
+        }
         //判断目录是否存在，没有则创建
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, {
@@ -128,7 +132,7 @@ let upload = multer({
         //dir就是上传服务器成功的图片的存放的目录
         cb(null, dir);
       },
-      //设置文件名称
+      //设置文件名称并上传文件
       filename: function (req, file, cb) {
         //fileName就是上传文件的文件名
         cb(null, file.originalname);
@@ -136,7 +140,7 @@ let upload = multer({
     })
 });
 
-router.post('/uploadMD', upload.single('file'), (req, res) => {
+router.post('/upload', upload.single('file'), (req, res) => {
     res.json({
       file: req.file
     })

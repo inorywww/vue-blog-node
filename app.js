@@ -23,8 +23,8 @@ app.use("/api/say", says);
 app.use("/api/message", messages);
 app.use("/api/tag", tags);
 
-app.use('/api/article/uploadMD', express.static(__dirname + '/uploadFile'))
-
+//可以直接通过浏览器访问
+app.use('/api/article/upload', express.static(__dirname + './public/covers'));
 
 utils.getTags(); // 此次启动使用 获取文章中和数据库中所有tag
 module.exports = app;
