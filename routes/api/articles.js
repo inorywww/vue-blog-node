@@ -8,8 +8,6 @@ const utils = require('../../utils'); //此次启动使用
 
 const multer = require("multer");
 const fs = require("fs");
-const path = require("path");
-const multiparty = require("multiparty");
 
 // addArticle api
 // $route POST api/article/add
@@ -114,14 +112,13 @@ router.delete("/delete/:articleID", passport.authenticate("jwt", {session: false
 let upload = multer({
     storage: multer.diskStorage({
       //设置文件存储位置
-
       destination: function (req, file, cb) {
         let dir = '';
         if(file.originalname.split('.')[1] === 'md'){
-           dir = "public/articles/";
+           dir = "public/articles/mdFile";
         }
         else{
-            dir = "public/covers/";
+            dir = "public/articles/cover";
         }
         //判断目录是否存在，没有则创建
         if (!fs.existsSync(dir)) {
@@ -140,9 +137,11 @@ let upload = multer({
     })
 });
 
-router.post('/upload', upload.single('file'), (req, res) => {
+router.post('/upload', upload.single('file'), async (req, res) => {
+   
     res.json({
       file: req.file
     })
-  })
+  });
+
 module.exports = router;
