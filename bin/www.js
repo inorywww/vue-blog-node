@@ -1,8 +1,7 @@
 const app = require('../app');
 const mongoose = require("mongoose");
-const marked = require("marked");
-const fs = require('fs');
-
+const history = require('connect-history-api-fallback');
+// const connect = require('connect');
 // mongodb connect
 const DB_URL = require("../config/keys").mongoURI;
 mongoose.connect(DB_URL, {
@@ -17,19 +16,8 @@ mongoose.connect(DB_URL, {
       console.log("Database connect");
     });
 
-// fs.readFile('public/articles/mdFile/python.md','utf-8',(err, data) => {
-//     if(err){
-//         console.log(err);
-//     }
-//     else{
-//         console.log(data);
-//         // str = marked(data.toString());
-//         // console.log(str)
-//     }
-// })
-
 const port = process.env.PORT || 5000;
-
+app.use(history());
 app.listen(port,() => {
     console.log(`server is running on ${port}`);
 });

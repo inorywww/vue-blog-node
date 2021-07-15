@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
-const utils = require('./utils'); //此次启动使用
+
+// const utils = require('./utils'); //此次启动使用
+
 // passport 初始化 
 const passport = require("passport");
 app.use(passport.initialize());
@@ -26,5 +28,5 @@ app.use("/api/tag", tags);
 //可以直接通过浏览器访问
 app.use('/api/article/upload', express.static(__dirname + './public/covers'));
 
-utils.getTags(); // 此次启动使用 获取文章中和数据库中所有tag
+// utils.getTags(); // 此次启动使用 获取文章中和数据库中所有tag
 module.exports = app;
