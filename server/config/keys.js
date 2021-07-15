@@ -1,4 +1,4 @@
 module.exports = {
-    mongoURI : "http://49.234.17.206/:27017/db",
+    mongoURI : "mongodb://127.0.0.1:27017/blogDB",
     secretOrKey:"secret"
 }
