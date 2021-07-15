@@ -97,7 +97,9 @@ router.post("/edit/:articleID", passport.authenticate("jwt", {
 // $route GET api/article/delete/:articleID
 // @desc 删除article
 // @access Private
-router.delete("/delete/:articleID", passport.authenticate("jwt", {session: false}), async (req, res) => {
+router.delete("/delete/:articleID", passport.authenticate("jwt", {
+    session: false
+}), async (req, res) => {
     await Article.findOneAndRemove({
             articleID: req.params.articleID
         })
@@ -111,37 +113,43 @@ router.delete("/delete/:articleID", passport.authenticate("jwt", {session: false
 
 let upload = multer({
     storage: multer.diskStorage({
-      //设置文件存储位置
-      destination: function (req, file, cb) {
-        let dir = '';
-        if(file.originalname.split('.')[1] === 'md'){
-           dir = "public/articles/mdFile";
+        //设置文件存储位置
+        destination: function (req, file, cb) {
+            let dir = '';
+            if (file.originalname.split('.')[1] === 'md') {
+                dir = "public/articles/mdFile";
+            } else {
+                dir = "public/articles/cover";
+            }
+            //判断目录是否存在，没有则创建
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, {
+                    recursive: true
+                });
+            }
+            //dir就是上传服务器成功的图片的存放的目录
+            cb(null, dir);
+        },
+        //设置文件名称并上传文件
+        filename: function (req, file, cb) {
+            //fileName就是上传文件的文件名
+            cb(null, file.originalname);
         }
-        else{
-            dir = "public/articles/cover";
-        }
-        //判断目录是否存在，没有则创建
-        if (!fs.existsSync(dir)) {
-          fs.mkdirSync(dir, {
-            recursive: true
-          });
-        }
-        //dir就是上传服务器成功的图片的存放的目录
-        cb(null, dir);
-      },
-      //设置文件名称并上传文件
-      filename: function (req, file, cb) {
-        //fileName就是上传文件的文件名
-        cb(null, file.originalname);
-      }
     })
+
 });
 
 router.post('/upload', upload.single('file'), async (req, res) => {
-   
+     fs.readFile(`public/articles/mdFile/${req.file.originalname}`, 'utf-8', async (err, data) => {
+                await Article.findOneAndUpdate(
+                    {fileName: req.file.originalname},
+                    {$set: {"content":data}},
+                    {new: true})
+            });
+
     res.json({
-      file: req.file
+        file: req.file
     })
-  });
+});
 
 module.exports = router;
