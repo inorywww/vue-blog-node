@@ -29,6 +29,7 @@ router.post("/add", passport.authenticate("jwt", {
     if (req.body.coverSrc) articleFields.coverSrc = req.body.coverSrc;
     if (req.body.title) articleFields.title = req.body.title;
     if (req.body.introduction) articleFields.introduction = req.body.introduction;
+    if (req.body.content) articleFields.content = req.body.content;
     if (req.body.tags) articleFields.tags = req.body.tags;
 
     await new Article(articleFields).save()
@@ -140,13 +141,6 @@ let upload = multer({
 });
 
 router.post('/upload', upload.single('file'), async (req, res) => {
-     fs.readFile(`public/articles/mdFile/${req.file.originalname}`, 'utf-8', async (err, data) => {
-                await Article.findOneAndUpdate(
-                    {fileName: req.file.originalname},
-                    {$set: {"content":data}},
-                    {new: true})
-            });
-            
     res.json({
         file: req.file
     })

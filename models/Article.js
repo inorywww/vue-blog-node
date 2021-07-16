@@ -13,6 +13,7 @@ const ArticleSchema = new Schema({
     },
     content:{
         type:String,
+        required:true
     },
     coverSrc:{
         type:String,

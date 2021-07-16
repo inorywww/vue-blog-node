@@ -2,7 +2,7 @@
 
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt-nodejs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
 const passport = require("passport");
@@ -21,36 +21,36 @@ router.post('/testPost',(req, res) => {
 router.post("/login", (req, res) => {
     const account = req.body.account;
     const password = req.body.password;
-    
+   
     // 查询数据库
-    User.findOne({account})
+    User.findOne({ account })
         .then(user => {
             if (!user) {
                 return res.status(400).json("用户不存在！");
             } else {
-                bcrypt.compare(user.password, password)
-                    .then(isMatch => {
-                        if (isMatch) {
-                            const rule = {
-                                id: user.id,
-                                account: user.account
-                            };
-                            jwt.sign(rule, keys.secretOrKey, {
-                                expiresIn: 3600
-                            }, (err, token) => {
-                                if (err) throw err;
-                                res.json({
-                                    success: true,
-                                    token: "Bearer " + token
-                                })
-                            })
-                        } else {
-                            return res.status(400).json("密码错误！")
-                        }
+                const pwdMatchFlag = bcrypt.compareSync(user.password, password);
+                if (pwdMatchFlag) {
+                    const rule = {
+                        id: user.id,
+                        account: user.account
+                    };
+                    jwt.sign(rule, keys.secretOrKey, {
+                        expiresIn: 3600
+                    }, (err, token) => {
+                        if (err) {
+                            console.log(err);
+                        };
+                        res.json({
+                            success: true,
+                            token: "Bearer " + token
+                        })
                     })
+                } else {
+                    return res.status(400).json("密码错误！")
+                }
             }
         })
-}) 
+})
 
 // register api
 // $route POST api/users/register
