@@ -13,7 +13,8 @@ const MessageSchema = new Schema({
     },
     id:{
         type:Number,
-        required:true
+        required:true,
+        default:0
     },
 });
 

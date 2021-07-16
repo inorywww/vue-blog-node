@@ -60,6 +60,7 @@ router.post("/edit/:tagID",passport.authenticate("jwt", {session: false}), (req,
     if(req.body.tagID) tagFields.tagID = req.body.tagID;
     if(req.body.tagName) tagFields.tagName = req.body.tagName;
     if(req.body.totalNum) tagFields.totalNum = req.body.totalNum;
+    
     Tag.findOneAndUpdate(
         {tagID:req.params.tagID},
         {$set:tagFields},

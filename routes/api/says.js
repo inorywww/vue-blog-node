@@ -6,9 +6,6 @@ const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const Say = require("../../models/Say");
 
-const multer = require("multer");
-const fs = require("fs");
-
 // addSay api
 // $route POST api/admin/say/add
 // @desc 添加say
@@ -66,6 +63,10 @@ router.post("/edit/:sayID",passport.authenticate("jwt", {session: false}), (req,
     if(req.body.userName) sayFields.userName = req.body.userName;
     if(req.body.content) sayFields.content = req.body.content;
     if(req.body.coverSrc) sayFields.coverSrc = req.body.coverSrc;
+    if(req.body.userAvatar) sayFields.userAvatar = req.body.userAvatar;
+    if(req.body.releaseTime) sayFields.releaseTime = req.body.releaseTime;
+    if(req.body.userIdentity) sayFields.userIdentity = req.body.userIdentity;
+    if(req.body.sayID) sayFields.sayID = req.body.sayID;
 
     Say.findOneAndUpdate(
         {sayID:req.params.sayID},
@@ -85,33 +86,5 @@ router.delete("/delete/:sayID",passport.authenticate("jwt", {session: false}), (
         }).catch(err => res.status(404).json("删除失败"))
 })
 
-
-let upload = multer({
-    storage: multer.diskStorage({
-      //设置文件存储位置
-      destination: function (req, file, cb) {
-        let dir = "public/says/cover";
-        //判断目录是否存在，没有则创建
-        if (!fs.existsSync(dir)) {
-          fs.mkdirSync(dir, {
-            recursive: true
-          });
-        }
-        //dir就是上传服务器成功的图片的存放的目录
-        cb(null, dir);
-      },
-      //设置文件名称并上传文件
-      filename: function (req, file, cb) {
-        //fileName就是上传文件的文件名
-        cb(null, file.originalname);
-      }
-    })
-});
-
-router.post('/upload', upload.single('file'), async (req, res) => {
-    res.json({
-      file: req.file
-    })
-});
 
 module.exports = router;

@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 const ArticleSchema = new Schema({
     articleID:{
         type:Number,
-        required:true
+        required:true,
+        default:0
     },
     fileName:{
         type:String,

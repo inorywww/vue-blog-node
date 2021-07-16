@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 const SaySchema = new Schema({
     sayID:{
         type:Number,
-        required:true
+        required:true,
+        default:0
     },
     userAvatar:{
         type:String,

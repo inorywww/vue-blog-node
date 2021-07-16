@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 const TagSchema = new Schema({
     tagID:{
         type:Number,
-        required:true
+        required:true,
+        default:0
     },
     tagName:{
         type:String,
