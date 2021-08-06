@@ -38,7 +38,7 @@ async function getInfo(){
     const articleInfo = {
         name:'articleInfo',
         num: allArticle.length,//数量
-        recent:allArticle.slice(-3),
+        recent:allArticle.slice(-5),
     }
     const sayInfo = {
         name:'sayInfo',

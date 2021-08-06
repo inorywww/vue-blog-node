@@ -52,3 +52,12 @@ exports.getTags = async function(){
         }
     })
 }
+
+//对对象数组排序
+exports.compare = function (property){
+    return function(obj1,obj2){
+        const value1 = obj1[property];
+        const value2 = obj2[property];
+        return value2 - value1;     // 升序
+    }
+}

@@ -5,7 +5,7 @@ const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const Tag = require("../../models/Tag");
 const Article = require("../../models/Article");
-// const utils = require('../utils')
+const utils = require('../../utils')
 // addTag api
 // $route POST api/admin/tag/add
 // @desc 添加tag
@@ -33,7 +33,7 @@ router.get("/", (req, res) => {
         if(!tag){
             return res.status(404).json("没有任何内容");
         }
-        res.json(tag)
+        res.json(tag.sort(utils.compare("totalNum")))
     }).catch(err => res.status(404).json(err))
 })
 

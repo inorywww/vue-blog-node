@@ -5,7 +5,7 @@ const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const Article = require("../../models/Article");
 const Tag = require("../../models/Tag");
-const utils = require('../../utils'); //此次启动使用
+const utils = require('../../utils'); 
 
 // getArticles api
 // $route GET api/article
@@ -16,7 +16,16 @@ router.get("/", (req, res) => {
         if (!article) {
             return res.status(404).json("没有任何内容");
         }
-        res.json(article)
+        res.json(article.sort(utils.compare("releaseTime")))
+    }).catch(err => res.status(404).json(err))
+})
+
+router.get("/recent", (req, res) => {
+    Article.find().then(article => {
+        if (!article) {
+            return res.status(404).json("没有任何内容");
+        }
+        res.json(article.sort(utils.compare("releaseTime")).splice(0,5))
     }).catch(err => res.status(404).json(err))
 })
 

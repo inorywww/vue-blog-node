@@ -1,7 +1,7 @@
 const app = require('../app');
 const mongoose = require("mongoose");
 const history = require('connect-history-api-fallback');
-// const connect = require('connect');
+
 // mongodb connect
 const DB_URL = require("../config/keys").mongoURI;
 mongoose.connect(DB_URL, {
